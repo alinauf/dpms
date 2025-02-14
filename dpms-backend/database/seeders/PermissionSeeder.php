@@ -18,32 +18,32 @@ class PermissionSeeder extends Seeder
 
         // Create permissions
         // Permit Management
-        Permission::create(['name' => 'create permits']);
-        Permission::create(['name' => 'update permits']);
-        Permission::create(['name' => 'delete permits']);
-        Permission::create(['name' => 'view permits']);
+        Permission::create(['name' => 'create permits','guard_name' => 'api']);
+        Permission::create(['name' => 'update permits','guard_name' => 'api']);
+        Permission::create(['name' => 'delete permits','guard_name' => 'api']);
+        Permission::create(['name' => 'view permits','guard_name' => 'api']);
 
         // Permit Applications
-        Permission::create(['name' => 'approve permit applications']);
-        Permission::create(['name' => 'reject permit applications']);
-        Permission::create(['name' => 'create permit applications']);
-        Permission::create(['name' => 'view permit applications']);
+        Permission::create(['name' => 'approve permit applications','guard_name' => 'api']);
+        Permission::create(['name' => 'reject permit applications','guard_name' => 'api']);
+        Permission::create(['name' => 'create permit applications','guard_name' => 'api']);
+        Permission::create(['name' => 'view permit applications','guard_name' => 'api']);
 
         // Reports
-        Permission::create(['name' => 'view reports']);
-        Permission::create(['name' => 'export reports']);
+        Permission::create(['name' => 'view reports','guard_name' => 'api']);
+        Permission::create(['name' => 'export reports','guard_name' => 'api']);
 
         // Notifications
-        Permission::create(['name' => 'receive permit notifications']);
+        Permission::create(['name' => 'receive permit notifications','guard_name' => 'api']);
 
         // QR Code Verification
-        Permission::create(['name' => 'scan permit qr']);
-        Permission::create(['name' => 'verify permits']);
+        Permission::create(['name' => 'scan permit qr','guard_name' => 'api']);
+        Permission::create(['name' => 'verify permits','guard_name' => 'api']);
 
         // Create Roles and Assign Permissions
         
         // 1. Admin Role
-        $adminRole = Role::create(['name' => 'admin']);
+        $adminRole = Role::create(['name' => 'admin','guard_name' => 'api']);
         $adminRole->givePermissionTo([
             'create permits',
             'update permits',
@@ -58,7 +58,7 @@ class PermissionSeeder extends Seeder
         ]);
 
         // 2. Security Role
-        $securityRole = Role::create(['name' => 'security']);
+        $securityRole = Role::create(['name' => 'security','guard_name' => 'api']);
         $securityRole->givePermissionTo([
             'scan permit qr',
             'verify permits',
@@ -66,7 +66,7 @@ class PermissionSeeder extends Seeder
         ]);
 
         // 3. Staff Role
-        $staffRole = Role::create(['name' => 'staff']);
+        $staffRole = Role::create(['name' => 'staff','guard_name' => 'api']);
         $staffRole->givePermissionTo([
             'create permit applications',
             'view permit applications',
@@ -74,7 +74,7 @@ class PermissionSeeder extends Seeder
         ]);
 
         //  Super Admin Role
-        $superAdminRole = Role::create(['name' => 'super-admin']);
+        $superAdminRole = Role::create(['name' => 'super-admin','guard_name' => 'api']);
         // Super admin gets all permissions via Gate::before rule
 
         $admin = User::factory()->create([

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\PermitApplicationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,21 @@ Route::middleware('auth:api')->group(function () {
                 'security' => $request->user()->hasRole('security')
             ]);
     });
+
+
+    // Staff can request for a permit
+    Route::post('permit', function (Request $request) {
+        return response()->json([
+            'message' => 'Staff route',
+            'user' => $request->user()
+        ]);
+    });
+
+    Route::post('permit/apply', [PermitApplicationController::class, 'store']);
+
+
+
+    // 
 
 
 });
