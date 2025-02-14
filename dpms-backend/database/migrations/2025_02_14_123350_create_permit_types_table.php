@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('permit_types', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->integer('rank'); // higher means better
+            $table->boolean('requires_approval')->default(true);
+            $table->text('description')->nullable();
             $table->timestamps();
+
+            $table->unique('name');
+            $table->index('rank');
         });
     }
 

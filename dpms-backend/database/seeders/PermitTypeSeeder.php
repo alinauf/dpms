@@ -15,22 +15,22 @@ class PermitTypeSeeder extends Seeder
     {
         $types = [
             [
-                'name' => 'Restricted',
-                'rank' => 1,
-                'requires_approval' => true,
-                'description' => 'Limited access permit for specific restricted areas'
-            ],
-            [
                 'name' => 'Temporary',
-                'rank' => 2,
+                'rank' => 1,
                 'requires_approval' => true,
                 'description' => 'Time-limited access permit'
             ],
             [
                 'name' => 'Permanent',
-                'rank' => 3,
+                'rank' => 2,
                 'requires_approval' => true,
                 'description' => 'Full access permanent permit'
+            ],
+            [
+                'name' => 'Restricted',
+                'rank' => 3,
+                'requires_approval' => true,
+                'description' => 'Limited access permit for specific restricted areas'
             ],
         ];
 
