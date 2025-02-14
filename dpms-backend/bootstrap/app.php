@@ -18,6 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+            'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
+            'scope' => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
         ]);
 
         //
