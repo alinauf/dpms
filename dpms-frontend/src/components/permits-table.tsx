@@ -21,6 +21,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
+import { differenceInDays } from 'date-fns'
+import { AlertCircle } from 'lucide-react'
 
 interface PermitsTableProps {
   permits: Permit[]
@@ -49,6 +51,34 @@ function getPaginationRange(currentPage: number, totalPages: number) {
   }
 
   return range
+}
+
+function getPermitStatus(permit: Permit) {
+  if (permit.is_expired) {
+    return {
+      label: 'Expired',
+      className: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+    }
+  }
+
+  const daysUntilExpiry = differenceInDays(
+    new Date(permit.valid_until),
+    new Date()
+  )
+
+  if (daysUntilExpiry <= 10) {
+    return {
+      label: `Expires in ${daysUntilExpiry} days`,
+      className:
+        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+    }
+  }
+
+  return {
+    label: 'Active',
+    className:
+      'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+  }
 }
 
 export function PermitsTable({
@@ -145,38 +175,42 @@ export function PermitsTable({
                 </TableCell>
               </TableRow>
             ) : (
-              filteredPermits.map((permit) => (
-                <TableRow
-                  key={permit.id}
-                  className='cursor-pointer transition-colors hover:bg-muted/50'
-                  onClick={() => handleRowClick(permit)}
-                >
-                  <TableCell className='font-medium'>
-                    {permit.permit_number}
-                  </TableCell>
-                  <TableCell>{permit.permit_type.name}</TableCell>
-                  <TableCell className='text-muted-foreground'>
-                    {new Date(permit.valid_from).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className='text-muted-foreground'>
-                    {new Date(permit.valid_until).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        permit.is_expired
-                          ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                          : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                      }`}
-                    >
-                      {permit.is_expired ? 'Expired' : 'Active'}
-                    </span>
-                  </TableCell>
-                  <TableCell className='text-muted-foreground'>
-                    {new Date(permit.created_at).toLocaleDateString()}
-                  </TableCell>
-                </TableRow>
-              ))
+              filteredPermits.map((permit) => {
+                const status = getPermitStatus(permit)
+                return (
+                  <TableRow
+                    key={permit.id}
+                    className='cursor-pointer transition-colors hover:bg-muted/50'
+                    onClick={() => handleRowClick(permit)}
+                  >
+                    <TableCell className='font-medium'>
+                      {permit.permit_number}
+                    </TableCell>
+                    <TableCell>{permit.permit_type.name}</TableCell>
+                    <TableCell className='text-muted-foreground'>
+                      {new Date(permit.valid_from).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className='text-muted-foreground'>
+                      {new Date(permit.valid_until).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      <div className='flex items-center gap-2'>
+                        <span
+                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${status.className}`}
+                        >
+                          {status.label}
+                        </span>
+                        {status.label.includes('Expires') && (
+                          <AlertCircle className='h-4 w-4 text-yellow-500' />
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className='text-muted-foreground'>
+                      {new Date(permit.created_at).toLocaleDateString()}
+                    </TableCell>
+                  </TableRow>
+                )
+              })
             )}
           </TableBody>
         </Table>
