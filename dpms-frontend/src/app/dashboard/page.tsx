@@ -1,14 +1,7 @@
 'use client'
 
 import React from 'react'
-import {
-  FileText,
-  Plus,
-  ClipboardList,
-  Users,
-  Settings,
-  BadgeCheck,
-} from 'lucide-react'
+import { FileText, Plus, ClipboardList, BadgeCheck } from 'lucide-react'
 import Link from 'next/link'
 import {
   Card,

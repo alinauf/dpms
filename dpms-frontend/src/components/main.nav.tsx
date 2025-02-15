@@ -3,6 +3,7 @@
 import { UserNav } from '@/components/user-nav'
 import { ThemeToggle } from '@/app/theme-toggle'
 import Link from 'next/link'
+import { Separator } from '@/components/ui/separator'
 
 export function MainNav() {
   return (
