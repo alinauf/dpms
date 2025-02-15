@@ -13,9 +13,9 @@ class PermitController extends Controller
     public function index(Request $request)
     {
         if ($request->user()->hasRole('staff')) {
-            $permits = Permit::where('user_id', $request->user()->id)->with('permitType','user')->get();
+            $permits = Permit::where('user_id', $request->user()->id)->with('permitType','user')->paginate(10);
         } else {
-            $permits = Permit::with('permitType','user')->get();
+            $permits = Permit::with('permitType','user')->paginate(10);
         }
         return response()->json([
             'message' => 'Permits retrieved successfully',

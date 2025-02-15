@@ -1,44 +1,59 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { PermitApplication } from '@/lib/permit/types'
-import { PermitApplicationsTable } from '@/components/permit-applications-table'
+import { Permit } from '@/lib/permit/types'
+import { PermitsTable } from '@/components/permits-table'
 import { Button } from '@/components/ui/button'
-import { getPermitApplications } from '@/lib/permit'
+import { getPermits } from '@/lib/permit'
 import { Download, FileText } from 'lucide-react'
 import { toast } from 'sonner'
-import { generatePermitApplicationsReport } from '@/lib/reports/generate-reports'
 import { 
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu'
+import { generatePermitsReport } from '@/lib/reports/generate-reports'
 
-export default function AdminPermitApplicationsPage() {
-  const [permitApplications, setPermitApplications] = useState<
-    PermitApplication[]
-  >([])
+export default function AdminPermitsPage() {
+  const [permits, setPermits] = useState<Permit[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalItems, setTotalItems] = useState(0)
 
   useEffect(() => {
-    const fetchPermitApplications = async () => {
+    const controller = new AbortController()
+
+    const fetchPermits = async () => {
       try {
         setIsLoading(true)
-        const response = await getPermitApplications(currentPage)
-        setPermitApplications(response.data)
+        const response = await getPermits(currentPage)
+        console.log('Permits Response:', response.data)
+
+        if (!response.data) {
+          throw new Error('No permits found')
+        }
+
+        setPermits(response.data)
         setTotalPages(response.meta.last_page)
         setTotalItems(response.meta.total)
-      } catch (error) {
-        toast.error('Failed to fetch permit applications')
+      } catch (err) {
+        if (err instanceof Error) {
+          toast.error(err.message)
+        } else {
+          toast.error('Failed to fetch permits')
+        }
       } finally {
         setIsLoading(false)
       }
     }
-    fetchPermitApplications()
+
+    fetchPermits()
+
+    return () => {
+      controller.abort()
+    }
   }, [currentPage])
 
   const handlePageChange = (page: number) => {
@@ -47,17 +62,17 @@ export default function AdminPermitApplicationsPage() {
 
   const handleExport = () => {
     // TODO: Implement export functionality
-    console.log('Export clicked')
+    toast.info('Export functionality coming soon')
   }
 
   const handleGenerateReport = async (format: 'pdf' | 'csv') => {
     try {
-      if (!permitApplications.length) {
+      if (!permits.length) {
         toast.error('No data available for report')
         return
       }
 
-      await generatePermitApplicationsReport(permitApplications, format)
+      await generatePermitsReport(permits, format)
       toast.success(`Report generated successfully`)
     } catch (error) {
       toast.error('Failed to generate report')
@@ -68,11 +83,9 @@ export default function AdminPermitApplicationsPage() {
     <div className='space-y-6 p-6'>
       <div className='flex items-center justify-between'>
         <div>
-          <h1 className='text-2xl font-bold tracking-tight'>
-            Permit Applications
-          </h1>
+          <h1 className='text-2xl font-bold tracking-tight'>Active Permits</h1>
           <p className='text-sm text-muted-foreground mt-1'>
-            Showing {permitApplications.length} of {totalItems} applications
+            Showing {permits.length} of {totalItems} permits
           </p>
         </div>
         <div className='flex items-center gap-4'>
@@ -95,8 +108,8 @@ export default function AdminPermitApplicationsPage() {
         </div>
       </div>
 
-      <PermitApplicationsTable
-        applications={permitApplications}
+      <PermitsTable
+        permits={permits}
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
@@ -104,4 +117,4 @@ export default function AdminPermitApplicationsPage() {
       />
     </div>
   )
-} 
+}

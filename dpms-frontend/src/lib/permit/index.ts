@@ -55,7 +55,7 @@ export const getPermits = async (page: number = 1) => {
   }
 }
 
-export async function getPermit(id: string) {
+export async function getPermit(id: string | number) {
   const response = await api.post<ApiResponse<Permit>>(`/api/permits/${id}`)
   return response.data
 }

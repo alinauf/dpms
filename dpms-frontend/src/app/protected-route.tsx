@@ -9,9 +9,14 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const { isAuthenticated } = useAuthStore()
 
+  // Add public routes that don't need authentication
+  const publicRoutes = ['/auth', '/verify-permit']
+
+  const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route))
+
   useEffect(() => {
-    // If not authenticated and not on auth pages, redirect to login
-    if (!isAuthenticated && !pathname.startsWith('/auth')) {
+    // If not authenticated and not on public routes, redirect to login
+    if (!isAuthenticated && !isPublicRoute) {
       router.push('/auth/login')
     }
 
@@ -19,10 +24,10 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
     if (isAuthenticated && pathname.startsWith('/auth')) {
       router.push('/dashboard')
     }
-  }, [isAuthenticated, pathname, router])
+  }, [isAuthenticated, pathname, router, isPublicRoute])
 
-  // Show children only if authenticated or on auth pages
-  if (!isAuthenticated && !pathname.startsWith('/auth')) {
+  // Show children if authenticated or on public routes
+  if (!isAuthenticated && !isPublicRoute) {
     return null
   }
 
