@@ -1,5 +1,5 @@
 import api, { ApiResponse } from '../api'
-import { PaginatedData, Permit, PermitApplication } from './types'
+import { PaginatedData, Permit, PermitApplication, PermitType } from './types'
 
 export const getPermitApplications = async (page: number = 1) => {
   const response = await api.post<
@@ -57,5 +57,27 @@ export const getPermits = async (page: number = 1) => {
 
 export async function getPermit(id: string | number) {
   const response = await api.post<ApiResponse<Permit>>(`/api/permits/${id}`)
+  return response.data
+}
+
+// get permit types
+export const getPermitTypes = async () => {
+  const response = await api.post<ApiResponse<PermitType[]>>(
+    '/api/permit/types'
+  )
+  return response.data
+}
+
+type ApplyForPermitData = {
+  permit_type_id: number
+  valid_from: string
+  valid_until: string
+  justification: string
+}
+export async function applyForPermit(data: ApplyForPermitData) {
+  const response = await api.post<ApiResponse<PermitApplication>>(
+    '/api/permit/apply',
+    data
+  )
   return response.data
 }

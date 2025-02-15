@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Permit;
+use App\Models\PermitType;
 use Illuminate\Http\Request;
 
 class PermitController extends Controller
@@ -41,27 +42,14 @@ class PermitController extends Controller
         ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Permit $permit)
+    // get permit types
+    public function getPermitTypes()
     {
-        //
+        $permitTypes = PermitType::all();
+        return response()->json([
+            'message' => 'Permit types retrieved successfully',
+            'data' => $permitTypes
+        ], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Permit $permit)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Permit $permit)
-    {
-        //
-    }
 }

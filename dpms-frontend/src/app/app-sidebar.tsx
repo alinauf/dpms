@@ -56,10 +56,6 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter className='border-t p-4'>
         <div className='flex flex-col gap-2'>
-          <Button variant='ghost' className='w-full justify-start gap-2'>
-            <SettingsIcon className='h-4 w-4' />
-            Settings
-          </Button>
           <Button
             onClick={() => {
               console.log('logging out')

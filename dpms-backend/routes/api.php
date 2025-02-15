@@ -37,7 +37,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('permits', [PermitController::class, 'index']);
     Route::post('permits/{permit}', [PermitController::class, 'show']);
-
+    Route::post('permit/types', [PermitController::class, 'getPermitTypes']);
 
 
     // 

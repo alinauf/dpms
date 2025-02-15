@@ -120,7 +120,7 @@ const StaffDashboard = ({ profile }: { profile: User }) => {
           </Card>
         </Link>
 
-        <Link href='/dashboard/permits/request' className='group'>
+        <Link href='/dashboard/staff/permits/request' className='group'>
           <Card className='border-none shadow-lg hover:shadow-xl transition-all duration-300 dark:bg-gray-800/40'>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 p-6'>
               <div className='space-y-2'>
