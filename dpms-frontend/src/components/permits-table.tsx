@@ -115,7 +115,11 @@ export function PermitsTable({
     if (onRowClick) {
       onRowClick(permit)
     } else {
-      router.push(`/dashboard/${user.role}/permits/${permit.id}`)
+      let role = 'staff'
+      if (user.role === 'admin' || user.role === 'security') {
+        role = 'admin'
+      }
+      router.push(`/dashboard/${role}/permits/${permit.id}`)
     }
   }
 
