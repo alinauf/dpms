@@ -10,7 +10,7 @@ export type ApiResponse<T> = {
 }
 
 const api = axios.create({
-  baseURL: process.env.BACKEND_API || 'http://dpms-backend.test',
+  baseURL: process.env.BACKEND_API || 'https://dpms-backend.nauf.dev',
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
