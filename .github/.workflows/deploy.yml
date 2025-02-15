@@ -1,0 +1,37 @@
+name: Deploy DPMS to Server
+
+on:
+  push:
+    branches:
+      - main  # This work flow is only triggered when the main branch is pushed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Install SSH key
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Copy files to the server
+      - name: Copy files to server
+        run: |
+          scp -o StrictHostKeyChecking=no -r . ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/my-app
+
+      # SSH into the server and deploy
+      - name: Deploy on server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+          cd /var/www/my-app
+          docker-compose -f ${{ secrets.DOCKER_COMPOSE_FILE }} down
+          docker-compose -f ${{ secrets.DOCKER_COMPOSE_FILE }} pull
+          docker-compose -f ${{ secrets.DOCKER_COMPOSE_FILE }} up -d
+          EOF
+
