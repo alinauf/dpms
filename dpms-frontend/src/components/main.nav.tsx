@@ -18,7 +18,6 @@ export function MainNav() {
         </div>
         <div className='flex flex-1 items-center justify-between space-x-2 md:justify-end'>
           <ThemeToggle />
-          <Separator orientation='vertical' className='h-6' />
           <UserNav />
         </div>
       </div>
