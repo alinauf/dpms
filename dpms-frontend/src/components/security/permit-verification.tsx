@@ -40,7 +40,7 @@ export function PermitVerification({ permitId }: PermitVerificationProps) {
         // Check if user can verify permits
         if (!canVerify) {
           throw new Error(
-            'Unauthorized: Only security officers and admins can verify permits'
+            'Unauthorized: Only security officers and administrators can verify permits'
           )
         }
 

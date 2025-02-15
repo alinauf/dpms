@@ -21,6 +21,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
+import { FileText } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface PermitApplicationsTableProps {
   applications: PermitApplication[]
@@ -100,6 +102,67 @@ export function PermitApplicationsTable({
 
   const paginationRange = getPaginationRange(currentPage, totalPages)
 
+  if (isLoading) {
+    return (
+      <div className='space-y-3'>
+        <div className='rounded-md border'>
+          <Table>
+            <TableHeader>
+              <TableRow className='hover:bg-transparent'>
+                <TableHead className='w-[200px] font-medium'>
+                  Permit Type
+                </TableHead>
+                <TableHead className='w-[120px] font-medium'>Status</TableHead>
+                <TableHead className='w-[150px] font-medium'>
+                  Valid From
+                </TableHead>
+                <TableHead className='w-[150px] font-medium'>
+                  Valid Until
+                </TableHead>
+                <TableHead className='w-[150px] font-medium'>
+                  Created At
+                </TableHead>
+                <TableHead className='font-medium'>Justification</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {[...Array(5)].map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <Skeleton className='h-4 w-[250px]' />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className='h-4 w-[100px]' />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className='h-4 w-[100px]' />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className='h-4 w-[100px]' />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+    )
+  }
+
+  if (!applications.length) {
+    return (
+      <div className='rounded-md border'>
+        <div className='flex flex-col items-center justify-center h-[400px] space-y-3'>
+          <FileText className='h-10 w-10 text-muted-foreground' />
+          <div className='text-xl font-medium'>No Applications Found</div>
+          <div className='text-sm text-muted-foreground'>
+            There are no permit applications to display at this time.
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className='space-y-4'>
       {showSearch && (
@@ -134,61 +197,42 @@ export function PermitApplicationsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={5} className='h-24 text-center'>
-                  <div className='flex items-center justify-center space-x-2'>
-                    <div className='h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent'></div>
-                    <span className='text-muted-foreground'>Loading...</span>
-                  </div>
+            {filteredApplications.map((application) => (
+              <TableRow
+                key={application.id}
+                className='cursor-pointer transition-colors hover:bg-muted/50'
+                onClick={() => handleRowClick(application)}
+              >
+                <TableCell className='font-medium'>
+                  {application.permit_type.name}
                 </TableCell>
-              </TableRow>
-            ) : filteredApplications.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className='h-24 text-center'>
-                  <span className='text-muted-foreground'>
-                    No applications found
+                <TableCell>
+                  <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      getStatus(application) === 'Approved'
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                        : getStatus(application) === 'Rejected'
+                        ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                    }`}
+                  >
+                    {getStatus(application)}
                   </span>
                 </TableCell>
+                <TableCell className='text-muted-foreground'>
+                  {new Date(application.valid_from).toLocaleDateString()}
+                </TableCell>
+                <TableCell className='text-muted-foreground'>
+                  {new Date(application.valid_until).toLocaleDateString()}
+                </TableCell>
+                <TableCell className='text-muted-foreground'>
+                  {new Date(application.created_at).toLocaleDateString()}
+                </TableCell>
+                <TableCell className='truncate max-w-xs text-muted-foreground'>
+                  {application.justification}
+                </TableCell>
               </TableRow>
-            ) : (
-              filteredApplications.map((application) => (
-                <TableRow
-                  key={application.id}
-                  className='cursor-pointer transition-colors hover:bg-muted/50'
-                  onClick={() => handleRowClick(application)}
-                >
-                  <TableCell className='font-medium'>
-                    {application.permit_type.name}
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        getStatus(application) === 'Approved'
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                          : getStatus(application) === 'Rejected'
-                          ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                      }`}
-                    >
-                      {getStatus(application)}
-                    </span>
-                  </TableCell>
-                  <TableCell className='text-muted-foreground'>
-                    {new Date(application.valid_from).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className='text-muted-foreground'>
-                    {new Date(application.valid_until).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className='text-muted-foreground'>
-                    {new Date(application.created_at).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className='truncate max-w-xs text-muted-foreground'>
-                    {application.justification}
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
+            ))}
           </TableBody>
         </Table>
       </div>
