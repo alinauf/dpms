@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -26,6 +27,9 @@ class UserFactory extends Factory
         $firstName = fake()->firstName();
         $lastName = fake()->lastName();
         $email = strtolower($firstName . '.' . $lastName . '@macl.aero');
+        while (User::where('email', $email)->exists()) {
+            $email = strtolower($firstName . '.' . $lastName . '@macl.aero');
+        }
 
         return [
             'first_name' => $firstName,

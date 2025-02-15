@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             PermitTypeSeeder::class,
             PermitCheckpointSeeder::class,
+            PermitApplicationSeeder::class,
         ]);
     }
 }

@@ -27,7 +27,7 @@ class PermitSL extends SL
     public function createUniquePermitNumber($permitTypeId, $permitApplicationId)
     {
         $permitType = PermitType::find($permitTypeId);
-        $permitNumber = $permitType->name . '-' . $permitTypeId . '-' . $permitApplicationId;
+        $permitNumber = $permitType->name . '-' . $permitTypeId . '-' . $permitApplicationId . '-' . now()->timestamp;
         return $permitNumber;
     }
 }
