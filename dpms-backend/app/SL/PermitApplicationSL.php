@@ -42,4 +42,71 @@ class PermitApplicationSL extends SL
             ];
         }
     }
+
+    public function getPermitApplicationsByUserId($userId)
+    {
+        return PermitApplication::where('user_id', $userId);
+    }
+
+    public function getPermitApplication($permitApplicationId)
+    {
+        return PermitApplication::find($permitApplicationId);
+    }
+
+    public function approvePermitApplication($permitApplicationId)
+    {
+        DB::beginTransaction();
+        try {
+            $permitApplication = PermitApplication::find($permitApplicationId);
+            $permitApplication->approval_status = true;
+            $status = $permitApplication->save();
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
+        DB::commit();
+        if ($status) {
+            return [
+                'status' => true,
+                'payload' => 'The permit application has been successfully approved',
+            ];
+        } else {
+            return [
+                'status' => false,
+                'payload' => 'There was an issue with approving the permit application',
+            ];
+        }
+        
+    }
+
+    public function rejectPermitApplication($permitApplicationId)
+    {
+        DB::beginTransaction();
+        try {
+            $permitApplication = PermitApplication::find($permitApplicationId);
+            $permitApplication->approval_status = false;
+            $status = $permitApplication->save();
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
+        DB::commit();
+        if ($status) {
+            return [
+                'status' => true,
+                'payload' => 'The permit application has been successfully rejected',
+            ];
+        } else {
+            return [
+                'status' => false,
+                'payload' => 'There was an issue with rejecting the permit application',
+            ];
+        }
+    }
+
+    public function retreiveAllPermitApplications()
+    {
+        return PermitApplication::all();
+    }
+
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PermitApplication;
 use App\SL\PermitApplicationSL;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PermitApplicationController extends Controller
 {
@@ -16,20 +17,19 @@ class PermitApplicationController extends Controller
         $this->permitApplicationSL = $permitApplicationSL;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(Request $request)
     {
-        //
+        if (!$request->user()->hasRole('admin')) {
+            $permitApplications = PermitApplication::where('user_id', $request->user()->id)->paginate(1);
+        }else{
+            $permitApplications = PermitApplication::paginate(1);
+        }
+
+        return response()->json([
+            'message' => 'Permit applications retrieved successfully',
+            'data' => $permitApplications
+        ], 200);
     }
 
     public function store(Request $request)
@@ -98,17 +98,28 @@ class PermitApplicationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PermitApplication $permitApplication)
+    public function show(Request $request, PermitApplication $permitApplication)
     {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(PermitApplication $permitApplication)
-    {
-        //
+        // if user is not admin, they can only view their own permit applications
+        if (!$request->user()->hasRole('admin')) {
+            if ($permitApplication->user_id !== $request->user()->id) {
+                return response()->json([
+                    'message' => 'Unauthorized. You can only view your own permit applications.'
+                ], 403);
+            }
+        }
+
+        if (!$request->user()->hasPermissionTo('view permit applications')) {
+            return response()->json([
+                'message' => 'Unauthorized. No permission to view permit applications.'
+            ], 403);
+        }
+
+        return response()->json([
+            'message' => 'Permit application retrieved successfully',
+            'data' => $permitApplication
+        ], 200);
     }
 
     /**
@@ -116,14 +127,23 @@ class PermitApplicationController extends Controller
      */
     public function update(Request $request, PermitApplication $permitApplication)
     {
-        //
-    }
+        if (!$request->user()->hasPermissionTo('approve permit applications') && !$request->user()->hasPermissionTo('reject permit applications')) {
+            return response()->json([
+                'message' => 'Unauthorized. Only staff members can update permit applications.'
+            ], 403);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(PermitApplication $permitApplication)
-    {
-        //
+        $isApproved = $request->is_approved;
+
+        if($isApproved){
+            $this->permitApplicationSL->approvePermitApplication($permitApplication->id);
+        }else{
+            $this->permitApplicationSL->rejectPermitApplication($permitApplication->id);
+        }
+
+        return response()->json([
+            'message' => 'Permit application updated successfully',
+            'data' => $permitApplication
+        ], 200);
     }
 }

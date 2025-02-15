@@ -34,6 +34,9 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::post('permit/apply', [PermitApplicationController::class, 'store']);
+    Route::get('permit/applications', [PermitApplicationController::class, 'index']);
+    Route::get('permit/applications/{permitApplication}', [PermitApplicationController::class, 'show']);
+    Route::put('permit/applications/{permitApplication}', [PermitApplicationController::class, 'update']);
 
 
 
