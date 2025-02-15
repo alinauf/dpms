@@ -17,10 +17,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('test', function (Request $request) {
             return response()->json([
                 'message' => 'Admin route',
-                'user' => $request->user(),
-                'admin' => $request->user()->hasRole('admin'),
-                'staff' => $request->user()->hasRole('staff'),
-                'security' => $request->user()->hasRole('security')
             ]);
     });
 
@@ -34,8 +30,8 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::post('permit/apply', [PermitApplicationController::class, 'store']);
-    Route::get('permit/applications', [PermitApplicationController::class, 'index']);
-    Route::get('permit/applications/{permitApplication}', [PermitApplicationController::class, 'show']);
+    Route::post('permit/applications', [PermitApplicationController::class, 'index']);
+    Route::post('permit/applications/{permitApplication}', [PermitApplicationController::class, 'show']);
     Route::put('permit/applications/{permitApplication}', [PermitApplicationController::class, 'update']);
 
 

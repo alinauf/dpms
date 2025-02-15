@@ -20,6 +20,11 @@ class PermitApplication extends Model
         return $this->belongsTo(PermitType::class);
     }
 
+    public function getPermitTypeNameAttribute()
+    {
+        return $this->permitType->name;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

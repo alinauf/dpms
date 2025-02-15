@@ -30,7 +30,7 @@ const StaffDashboard = ({ profile }: { profile: User }) => {
       </div>
 
       <div className='grid gap-6 md:grid-cols-3'>
-        <Link href='/dashboard/permits/applications' className='group'>
+        <Link href='/dashboard/staff/permit-applications' className='group'>
           <Card className='border-none shadow-lg hover:shadow-xl transition-all duration-300 dark:bg-gray-800/40'>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 p-6'>
               <div className='space-y-2'>

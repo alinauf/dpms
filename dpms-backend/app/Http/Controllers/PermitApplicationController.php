@@ -20,10 +20,12 @@ class PermitApplicationController extends Controller
 
     public function index(Request $request)
     {
+        
         if (!$request->user()->hasRole('admin')) {
-            $permitApplications = PermitApplication::where('user_id', $request->user()->id)->paginate(1);
+            
+            $permitApplications = PermitApplication::with('permitType', 'user')->where('user_id', $request->user()->id)->paginate(10);
         }else{
-            $permitApplications = PermitApplication::paginate(1);
+            $permitApplications = PermitApplication::with('permitType', 'user')->paginate(10);
         }
 
         return response()->json([
@@ -118,7 +120,7 @@ class PermitApplicationController extends Controller
 
         return response()->json([
             'message' => 'Permit application retrieved successfully',
-            'data' => $permitApplication
+            'data' => $permitApplication->load('permitType', 'user')
         ], 200);
     }
 

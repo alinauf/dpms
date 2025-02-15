@@ -3,7 +3,11 @@ import { useAuthStore } from './auth.store'
 
 // Create axios instance with default config
 
-console.log('API Base URL:', process.env.BACKEND_API)
+// API Response type
+export type ApiResponse<T> = {
+  message: string
+  data: T
+}
 
 const api = axios.create({
   baseURL: process.env.BACKEND_API || 'http://dpms-backend.test',
