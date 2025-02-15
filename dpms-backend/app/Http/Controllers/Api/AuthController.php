@@ -10,6 +10,11 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    public function __construct()
+    {
+        // Remove the middleware from constructor
+    }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -27,8 +32,19 @@ class AuthController extends Controller
       
         $token = $user->createToken('auth-token', [$user->role])->accessToken;
 
+        $role = $user->hasRole('admin') ? 'admin' : 'staff';
+        $role = $user->hasRole('security') ? 'security' : $role;
+
         return response()->json([
-            'user' => $user,
+            'user' => [
+                'id' => $user->id,
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+                'employee_id' => $user->employee_id,
+                'department' => $user->department,
+                'role' => $role,
+            ],
             'token' => $token,
             'token_type' => 'Bearer',
         ]);

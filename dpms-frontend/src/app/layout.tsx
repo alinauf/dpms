@@ -3,6 +3,7 @@ import { Geist } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { MainNav } from '@/components/main.nav'
+import { ProtectedRoute } from './protected-route'
 
 const geist = Geist({
   subsets: ['latin'],
@@ -27,10 +28,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className='min-h-screen'>
-            <MainNav />
-            <main className='container mx-auto py-6'>{children}</main>
-          </div>
+          <ProtectedRoute>
+            <div className='min-h-screen'>
+              <MainNav />
+              <main className='container mx-auto py-6'>{children}</main>
+            </div>
+          </ProtectedRoute>
         </ThemeProvider>
       </body>
     </html>

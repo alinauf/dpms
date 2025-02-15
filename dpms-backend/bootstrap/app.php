@@ -13,13 +13,24 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->api(prepend: [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            \Laravel\Passport\Http\Middleware\CreateFreshApiToken::class,
         ]);
 
         $middleware->alias([
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
             'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
             'scope' => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
+        ]);
+
+        $middleware->validateCsrfTokens([
+            'except' => [
+                'api/*',
+                'oauth/*'
+            ]
+        ]);
+
+        $middleware->remove([
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ]);
 
         //
