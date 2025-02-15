@@ -17,6 +17,7 @@ import {
   LogOutIcon,
 } from 'lucide-react'
 import Image from 'next/image'
+import { logout } from '@/lib/auth'
 
 export function AppSidebar() {
   return (
@@ -60,6 +61,10 @@ export function AppSidebar() {
             Settings
           </Button>
           <Button
+            onClick={() => {
+              console.log('logging out')
+              logout()
+            }}
             variant='ghost'
             className='w-full justify-start gap-2 text-red-500'
           >
