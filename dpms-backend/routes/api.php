@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\PermitApplicationController;
+use App\Http\Controllers\PermitController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,7 +35,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('permit/applications/{permitApplication}', [PermitApplicationController::class, 'show']);
     Route::post('permit/applications/update/{permitApplication}', [PermitApplicationController::class, 'update']);
 
-
+    Route::post('permits', [PermitController::class, 'index']);
+    Route::post('permits/{permit}', [PermitController::class, 'show']);
 
 
 

@@ -1,5 +1,5 @@
-import { ApiResponse } from "../api"
-import { User } from "../user/types"
+import { ApiResponse } from '../api'
+import { User } from '../user/types'
 
 export enum PermitTypeNames {
   restricted = 'restricted',
@@ -26,7 +26,10 @@ export type Permit = {
   valid_until: Date
   permit_application_id: number
   is_expired: boolean
+  user: User
   permit_type: PermitType
+  created_at: Date
+  updated_at: Date
 }
 
 // Base Permit Application type

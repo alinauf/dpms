@@ -10,33 +10,35 @@ class PermitController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        if ($request->user()->hasRole('staff')) {
+            $permits = Permit::where('user_id', $request->user()->id)->with('permitType','user')->get();
+        } else {
+            $permits = Permit::with('permitType','user')->get();
+        }
+        return response()->json([
+            'message' => 'Permits retrieved successfully',
+            'data' => $permits
+        ], 200);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Permit $permit)
+    public function show(Request $request,  Permit $permit)
     {
-        //
+        if ($request->user()->hasRole('staff')) {
+            if ($permit->user_id !== $request->user()->id) {
+                return response()->json([
+                    'message' => 'Unauthorized. You can only view your own permits.'
+                ], 403);
+            }
+        }   
+        return response()->json([
+            'message' => 'Permit retrieved successfully',
+            'data' => $permit->load('permitType','user')
+        ], 200);
     }
 
     /**
