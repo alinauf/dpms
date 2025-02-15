@@ -2,7 +2,9 @@
 
 namespace App\SL;
 
+use App\Models\Permit;
 use App\Models\PermitApplication;
+use App\Models\PermitType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -60,6 +62,7 @@ class PermitApplicationSL extends SL
             $permitApplication = PermitApplication::find($permitApplicationId);
             $permitApplication->approval_status = true;
             $status = $permitApplication->save();
+            $permit = (new PermitSL())->createPermit($permitApplicationId);
         } catch (\Exception $e) {
             DB::rollback();
             throw $e;
@@ -108,5 +111,6 @@ class PermitApplicationSL extends SL
     {
         return PermitApplication::all();
     }
+
 
 }

@@ -32,7 +32,9 @@ Route::middleware('auth:api')->group(function () {
     Route::post('permit/apply', [PermitApplicationController::class, 'store']);
     Route::post('permit/applications', [PermitApplicationController::class, 'index']);
     Route::post('permit/applications/{permitApplication}', [PermitApplicationController::class, 'show']);
-    Route::put('permit/applications/{permitApplication}', [PermitApplicationController::class, 'update']);
+    Route::post('permit/applications/update/{permitApplication}', [PermitApplicationController::class, 'update']);
+
+
 
 
 

@@ -14,3 +14,19 @@ export async function getPermitApplication(id: string) {
   )
   return response.data
 }
+
+export async function updatePermitApplication({
+  id,
+  is_approved,
+}: {
+  id: number
+  is_approved: boolean
+}) {
+  const response = await api.post<ApiResponse<PermitApplication>>(
+    `/api/permit/applications/update/${id}`,
+    {
+      is_approved,
+    }
+  )
+  return response.data
+}

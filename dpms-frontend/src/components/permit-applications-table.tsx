@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/table'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useProfile } from '@/hooks/use-profile'
 
 interface PermitApplicationsTableProps {
   applications: PermitApplication[]
@@ -26,6 +27,7 @@ export function PermitApplicationsTable({
 }: PermitApplicationsTableProps) {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
+  const user = useProfile()
 
   const getStatus = (application: PermitApplication) => {
     if (application.approval_status === null) {
@@ -45,7 +47,9 @@ export function PermitApplicationsTable({
     if (onRowClick) {
       onRowClick(application)
     } else {
-      router.push(`/dashboard/staff/permit-applications/${application.id}`)
+      router.push(
+        `/dashboard/${user.role}/permit-applications/${application.id}`
+      )
     }
   }
 

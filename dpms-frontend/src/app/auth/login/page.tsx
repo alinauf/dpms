@@ -17,6 +17,7 @@ export default function LoginPage() {
   return (
     <>
       <div className='flex flex-col space-y-2 text-center mb-4'>
+        
         <h1 className='text-2xl font-semibold tracking-tight'>
           Digital Permit Management System
         </h1>
