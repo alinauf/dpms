@@ -66,6 +66,10 @@ export function PermitApplicationsTable({
   const [searchQuery, setSearchQuery] = useState('')
   const user = useProfile()
 
+  if (!user) {
+    return <div>Loading...</div>
+  }
+
   // Sort applications by created_at in descending order
   const sortedApplications = [...applications].sort((a, b) => {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()

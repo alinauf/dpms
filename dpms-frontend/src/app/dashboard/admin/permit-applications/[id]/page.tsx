@@ -60,9 +60,7 @@ export default function AdminPermitApplicationPage({
         if (!isMounted) return
 
         const errorMessage =
-          err instanceof Error
-            ? err.message
-            : 'Failed to load permit application'
+          err instanceof Error ? err.message : 'Failed to load permit application'
 
         setError(errorMessage)
         toast.error(errorMessage)
@@ -97,7 +95,7 @@ export default function AdminPermitApplicationPage({
       // Refresh the application data
       const response = await getPermitApplication(id)
       setApplication(response.data)
-    } catch (error) {
+    } catch {
       toast.error('Failed to update permit application')
     } finally {
       setIsUpdating(false)
@@ -126,7 +124,7 @@ export default function AdminPermitApplicationPage({
             {error || 'Permit Application Not Found'}
           </h2>
           <p className='text-sm text-muted-foreground max-w-md mx-auto'>
-            We couldn't find the permit application you're looking for. It may
+            We couldn&apos;t find the permit application you&apos;re looking for. It may
             have been deleted or you may have insufficient permissions.
           </p>
           <Button onClick={() => router.back()} className='mt-4'>

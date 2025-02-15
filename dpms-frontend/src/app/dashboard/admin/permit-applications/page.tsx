@@ -5,7 +5,6 @@ import { PermitApplication } from '@/lib/permit/types'
 import { PermitApplicationsTable } from '@/components/permit-applications-table'
 import { Button } from '@/components/ui/button'
 import { getPermitApplications } from '@/lib/permit'
-import { Download, FileText } from 'lucide-react'
 import { toast } from 'sonner'
 import { generatePermitApplicationsReport } from '@/lib/reports/generate-reports'
 import { 
@@ -14,6 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu'
+import { FileText } from 'lucide-react'
 
 export default function AdminPermitApplicationsPage() {
   const [permitApplications, setPermitApplications] = useState<
@@ -32,7 +32,7 @@ export default function AdminPermitApplicationsPage() {
         setPermitApplications(response.data)
         setTotalPages(response.meta.last_page)
         setTotalItems(response.meta.total)
-      } catch (error) {
+      } catch {
         toast.error('Failed to fetch permit applications')
       } finally {
         setIsLoading(false)
@@ -43,11 +43,6 @@ export default function AdminPermitApplicationsPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
-  }
-
-  const handleExport = () => {
-    // TODO: Implement export functionality
-    console.log('Export clicked')
   }
 
   const handleGenerateReport = async (format: 'pdf' | 'csv') => {

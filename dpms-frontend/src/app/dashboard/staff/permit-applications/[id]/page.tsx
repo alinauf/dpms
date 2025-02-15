@@ -88,7 +88,7 @@ export default function PermitApplicationPage({
             {error || 'Permit Application Not Found'}
           </h2>
           <p className='text-sm text-muted-foreground max-w-md mx-auto'>
-            We couldn't find the permit application you're looking for. It may
+            We couldn&apos;t find the permit application you&apos;re looking for. It may
             have been deleted or you may have insufficient permissions.
           </p>
           <Button onClick={() => router.back()} className='mt-4'>

@@ -26,20 +26,29 @@ function generatePDF(applications: PermitApplication[]) {
   doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 25)
 
   // Prepare table data
-  const tableData = applications.map(app => [
-    app.permit_number,
+  const tableData = applications.map((app) => [
     `${app.user.first_name} ${app.user.last_name}`,
     app.user.employee_id,
     app.permit_type.name,
     new Date(app.valid_from).toLocaleDateString(),
     new Date(app.valid_until).toLocaleDateString(),
-    app.is_approved ? 'Approved' : 'Pending'
+    app.approval_status ? 'Approved' : 'Pending',
   ])
 
-  // Add table
+  // @ts-expect-error - jspdf-autotable is not typed
   doc.autoTable({
     startY: 35,
-    head: [['Permit #', 'Name', 'Employee ID', 'Type', 'Valid From', 'Valid Until', 'Status']],
+    head: [
+      [
+        'Permit #',
+        'Name',
+        'Employee ID',
+        'Type',
+        'Valid From',
+        'Valid Until',
+        'Status',
+      ],
+    ],
     body: tableData,
     styles: { fontSize: 8 },
     headStyles: { fillColor: [41, 128, 185] },
@@ -49,17 +58,16 @@ function generatePDF(applications: PermitApplication[]) {
 }
 
 function generateCSV(applications: PermitApplication[]) {
-  const data = applications.map(app => ({
-    'Permit Number': app.permit_number,
+  const data = applications.map((app) => ({
     'Employee Name': `${app.user.first_name} ${app.user.last_name}`,
     'Employee ID': app.user.employee_id,
-    'Department': app.user.department,
+    Department: app.user.department,
     'Permit Type': app.permit_type.name,
     'Valid From': new Date(app.valid_from).toLocaleDateString(),
     'Valid Until': new Date(app.valid_until).toLocaleDateString(),
-    'Status': app.is_approved ? 'Approved' : 'Pending',
+    Status: app.approval_status ? 'Approved' : 'Pending',
     'Created At': new Date(app.created_at).toLocaleDateString(),
-    'Updated At': new Date(app.updated_at).toLocaleDateString()
+    'Updated At': new Date(app.updated_at).toLocaleDateString(),
   }))
 
   const csv = Papa.unparse(data)
@@ -72,4 +80,4 @@ function generateCSV(applications: PermitApplication[]) {
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
-} 
+}

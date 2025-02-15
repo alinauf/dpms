@@ -39,20 +39,29 @@ function generateApplicationsPDF(applications: PermitApplication[]) {
   doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 25)
 
   // Prepare table data
-  const tableData = applications.map(app => [
-    app.permit_number,
+  const tableData = applications.map((app) => [
     `${app.user.first_name} ${app.user.last_name}`,
     app.user.employee_id,
     app.permit_type.name,
     new Date(app.valid_from).toLocaleDateString(),
     new Date(app.valid_until).toLocaleDateString(),
-    app.is_approved ? 'Approved' : 'Pending'
+    app.approval_status ? 'Approved' : 'Pending',
   ])
 
-  // Add table
+  // @ts-expect-error - jspdf-autotable is not typed
   doc.autoTable({
     startY: 35,
-    head: [['Permit #', 'Name', 'Employee ID', 'Type', 'Valid From', 'Valid Until', 'Status']],
+    head: [
+      [
+        'Permit #',
+        'Name',
+        'Employee ID',
+        'Type',
+        'Valid From',
+        'Valid Until',
+        'Status',
+      ],
+    ],
     body: tableData,
     styles: { fontSize: 8 },
     headStyles: { fillColor: [41, 128, 185] },
@@ -71,20 +80,30 @@ function generatePermitsPDF(permits: Permit[]) {
   doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 25)
 
   // Prepare table data
-  const tableData = permits.map(permit => [
+  const tableData = permits.map((permit) => [
     permit.permit_number,
     `${permit.user.first_name} ${permit.user.last_name}`,
     permit.user.employee_id,
     permit.permit_type.name,
     new Date(permit.valid_from).toLocaleDateString(),
     new Date(permit.valid_until).toLocaleDateString(),
-    permit.is_expired ? 'Expired' : 'Active'
+    permit.is_expired ? 'Expired' : 'Active',
   ])
 
-  // Add table
+  // @ts-expect-error - jspdf-autotable is not typed
   doc.autoTable({
     startY: 35,
-    head: [['Permit #', 'Name', 'Employee ID', 'Type', 'Valid From', 'Valid Until', 'Status']],
+    head: [
+      [
+        'Permit #',
+        'Name',
+        'Employee ID',
+        'Type',
+        'Valid From',
+        'Valid Until',
+        'Status',
+      ],
+    ],
     body: tableData,
     styles: { fontSize: 8 },
     headStyles: { fillColor: [41, 128, 185] },
@@ -94,40 +113,42 @@ function generatePermitsPDF(permits: Permit[]) {
 }
 
 function generateApplicationsCSV(applications: PermitApplication[]) {
-  const data = applications.map(app => ({
-    'Permit Number': app.permit_number,
+  const data = applications.map((app) => ({
     'Employee Name': `${app.user.first_name} ${app.user.last_name}`,
     'Employee ID': app.user.employee_id,
-    'Department': app.user.department,
+    Department: app.user.department,
     'Permit Type': app.permit_type.name,
     'Valid From': new Date(app.valid_from).toLocaleDateString(),
     'Valid Until': new Date(app.valid_until).toLocaleDateString(),
-    'Status': app.is_approved ? 'Approved' : 'Pending',
+    Status: app.approval_status ? 'Approved' : 'Pending',
     'Created At': new Date(app.created_at).toLocaleDateString(),
-    'Updated At': new Date(app.updated_at).toLocaleDateString()
+    'Updated At': new Date(app.updated_at).toLocaleDateString(),
   }))
 
   downloadCSV(data, 'permit-applications-report.csv')
 }
 
 function generatePermitsCSV(permits: Permit[]) {
-  const data = permits.map(permit => ({
+  const data = permits.map((permit) => ({
     'Permit Number': permit.permit_number,
     'Employee Name': `${permit.user.first_name} ${permit.user.last_name}`,
     'Employee ID': permit.user.employee_id,
-    'Department': permit.user.department,
+    Department: permit.user.department,
     'Permit Type': permit.permit_type.name,
     'Valid From': new Date(permit.valid_from).toLocaleDateString(),
     'Valid Until': new Date(permit.valid_until).toLocaleDateString(),
-    'Status': permit.is_expired ? 'Expired' : 'Active',
+    Status: permit.is_expired ? 'Expired' : 'Active',
     'Created At': new Date(permit.created_at).toLocaleDateString(),
-    'Updated At': new Date(permit.updated_at).toLocaleDateString()
+    'Updated At': new Date(permit.updated_at).toLocaleDateString(),
   }))
 
   downloadCSV(data, 'active-permits-report.csv')
 }
 
-function downloadCSV(data: any[], filename: string) {
+function downloadCSV(
+  data: Record<string, string | number>[],
+  filename: string
+) {
   const csv = Papa.unparse(data)
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
   const link = document.createElement('a')
@@ -138,4 +159,4 @@ function downloadCSV(data: any[], filename: string) {
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
-} 
+}

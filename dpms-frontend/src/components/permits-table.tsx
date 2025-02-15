@@ -64,6 +64,10 @@ export function PermitsTable({
   const [searchQuery, setSearchQuery] = useState('')
   const user = useProfile()
 
+  if (!user) {
+    return <div>Loading...</div>
+  }
+
   // Sort permits by created_at in descending order
   const sortedPermits = [...permits].sort((a, b) => {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()

@@ -21,6 +21,11 @@ import { User } from '@/lib/user/types'
 
 export default function DashboardPage(): React.JSX.Element {
   const profile = useProfile()
+
+  if (!profile) {
+    return <div>Loading...</div>
+  }
+
   const role = profile.role
 
   if (role === 'staff') {

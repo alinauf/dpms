@@ -27,7 +27,7 @@ export default function PermitApplicationsPage() {
         setPermitApplications(response.data)
         setTotalPages(response.meta.last_page)
         setTotalItems(response.meta.total)
-      } catch (_error) {
+      } catch {
         toast.error('Failed to fetch permit applications')
       } finally {
         setIsLoading(false)

@@ -5,13 +5,13 @@ import { Permit } from '@/lib/permit/types'
 import { PermitsTable } from '@/components/permits-table'
 import { Button } from '@/components/ui/button'
 import { getPermits } from '@/lib/permit'
-import { Download, FileText } from 'lucide-react'
+import { FileText } from 'lucide-react'
 import { toast } from 'sonner'
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { generatePermitsReport } from '@/lib/reports/generate-reports'
 
@@ -60,11 +60,6 @@ export default function AdminPermitsPage() {
     setCurrentPage(page)
   }
 
-  const handleExport = () => {
-    // TODO: Implement export functionality
-    toast.info('Export functionality coming soon')
-  }
-
   const handleGenerateReport = async (format: 'pdf' | 'csv') => {
     try {
       if (!permits.length) {
@@ -74,7 +69,7 @@ export default function AdminPermitsPage() {
 
       await generatePermitsReport(permits, format)
       toast.success(`Report generated successfully`)
-    } catch (error) {
+    } catch {
       toast.error('Failed to generate report')
     }
   }

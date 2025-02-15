@@ -26,7 +26,9 @@ export default function PermitPage({ params }: PermitPageProps) {
   const resolvedParams = React.use(params)
 
   useEffect(() => {
-    if (profile.role !== 'staff') {
+    const controller = new AbortController()
+
+    if (!profile || profile.role !== 'staff') {
       toast.error('Unauthorized access')
       router.push('/dashboard')
       return
@@ -37,7 +39,7 @@ export default function PermitPage({ params }: PermitPageProps) {
         setIsLoading(true)
         const response = await getPermit(resolvedParams.id)
         setPermit(response.data)
-      } catch (error) {
+      } catch {
         toast.error('Failed to fetch permit details')
         router.push('/dashboard/staff/permits')
       } finally {
@@ -46,7 +48,11 @@ export default function PermitPage({ params }: PermitPageProps) {
     }
 
     fetchPermit()
-  }, [resolvedParams.id, profile.role, router])
+
+    return () => {
+      controller.abort()
+    }
+  }, [resolvedParams.id, profile?.role, router, profile])
 
   if (isLoading) {
     return (
@@ -142,8 +148,12 @@ export default function PermitPage({ params }: PermitPageProps) {
               <div className='space-y-1'>
                 <p className='font-medium'>Validity Period</p>
                 <div className='text-muted-foreground space-y-0.5'>
-                  <p>From: {new Date(permit.valid_from).toLocaleDateString()}</p>
-                  <p>Until: {new Date(permit.valid_until).toLocaleDateString()}</p>
+                  <p>
+                    From: {new Date(permit.valid_from).toLocaleDateString()}
+                  </p>
+                  <p>
+                    Until: {new Date(permit.valid_until).toLocaleDateString()}
+                  </p>
                 </div>
               </div>
             </div>
@@ -161,7 +171,7 @@ export default function PermitPage({ params }: PermitPageProps) {
           </CardHeader>
           <CardContent className='flex flex-col items-center justify-center flex-1 p-8 space-y-6'>
             <div className='bg-white p-6 rounded-lg'>
-              <PermitQRCode permitNumber={permit.permit_number} />
+              <PermitQRCode permitNumber={permit.id} />
             </div>
             <div className='text-center space-y-2'>
               <p className='text-sm text-muted-foreground'>

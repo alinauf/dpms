@@ -59,11 +59,11 @@ export default function RequestPermitPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    if (profile.role !== 'staff') {
+    if (!profile || profile.role !== 'staff') {
       toast.error('Only staff members can request permits')
       router.push('/dashboard')
     }
-  }, [profile.role, router])
+  }, [profile?.role, router, profile])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -78,7 +78,7 @@ export default function RequestPermitPage() {
       try {
         const response = await getPermitTypes()
         setPermitTypes(response.data)
-      } catch (error) {
+      } catch {
         toast.error('Failed to fetch permit types')
       }
     }
@@ -97,11 +97,15 @@ export default function RequestPermitPage() {
       })
       toast.success('Permit application submitted successfully')
       router.push('/dashboard/staff/permit-applications')
-    } catch (error) {
+    } catch {
       toast.error('Failed to submit permit application')
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (!profile) {
+    return <div>Loading...</div>
   }
 
   return (
@@ -303,4 +307,4 @@ export default function RequestPermitPage() {
       </div>
     </div>
   )
-} 
+}

@@ -17,6 +17,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { login } from '@/lib/auth'
 import { useAuthStore } from '@/lib/auth.store'
+import { toast } from 'sonner'
 
 const formSchema = z.object({
   email: z
@@ -31,7 +32,6 @@ type LoginFormValues = z.infer<typeof formSchema>
 export function LoginForm() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const setAuth = useAuthStore((state) => state.setAuth)
 
   const form = useForm<LoginFormValues>({
@@ -43,7 +43,6 @@ export function LoginForm() {
   })
 
   async function onSubmit(values: LoginFormValues) {
-    console.log('onSubmit', values)
     setIsLoading(true)
     try {
       const response = await login({
@@ -51,10 +50,8 @@ export function LoginForm() {
         password: values.password,
       })
 
-      // Store auth data in zustand
       setAuth(response.user, response.token)
 
-      // Redirect based on user role
       switch (response.user.role) {
         case 'admin':
           router.push('/dashboard/admin')
@@ -68,8 +65,8 @@ export function LoginForm() {
         default:
           router.push('/dashboard')
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+    } catch {
+      toast.error('Invalid email or password')
     } finally {
       setIsLoading(false)
     }

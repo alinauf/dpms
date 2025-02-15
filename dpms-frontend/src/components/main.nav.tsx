@@ -1,7 +1,6 @@
 'use client'
 
 import { UserNav } from '@/components/user-nav'
-import { Separator } from '@/components/ui/separator'
 import { ThemeToggle } from '@/app/theme-toggle'
 import Link from 'next/link'
 
